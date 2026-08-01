@@ -24,13 +24,6 @@ python -m http.server 8080
 - “AI 配色”功能未配置 API Key，公开归档中不可用；仓库不包含 API Key。
 - Electron/EXE 构建在依赖树恢复完整并通过本地启动验收前，不作为发布版本。
 
-## 发布前必须完成
-
-1. 依据 [THIRD_PARTY.md](THIRD_PARTY.md) 核验或替换音频与天空盒素材。
-2. 选择并加入公开许可证。
-3. 在干净、完整的依赖目录中执行 `npm run check`、`npm start`、`npm run dist:win`，并实际启动生成的 EXE。
-4. 核对生成物不含 API Key、调试文件或未获授权素材。
-
 ## 项目文件
 
 - `index.html`、`script.js`、`style.css`：Web 应用。
