@@ -1,0 +1,48 @@
+{
+  "name": "vectorcore",
+  "productName": "VectorCore",
+  "version": "1.0.0",
+  "description": "A hand-tracked interactive planet experiment built with Three.js and MediaPipe.",
+  "main": "main.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": ".\\node_modules\\electron\\dist\\electron.exe .",
+    "check": "node --check script.js && node --check main.js",
+    "dist:win": "node .\\node_modules\\electron-builder\\out\\cli\\cli.js --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "43.2.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.vectorcore.app",
+    "productName": "VectorCore",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "script.js",
+      "style.css",
+      "assets/**/*",
+      "audio/*.mp3",
+      "audio/*.wav",
+      "audio/*.WAV",
+      "audio/*.flac"
+    ],
+    "win": {
+      "icon": "ico.png",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "VectorCore-${version}-win-${arch}.${ext}"
+    }
+  }
+}

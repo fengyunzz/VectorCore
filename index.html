@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矢量核心 - 物理玻璃版</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background Music -->
+    <audio id="bg-music" loop>
+        <source src="audio/us_menu_bgm_ethereal_loop_01.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- MediaPipe 隐藏 Video (必须存在，但无需可见) -->
+    <video class="input_video" playsinline></video>
+
+    <div id="ui-container">
+        <!-- From Uiverse.io by andrew-manzyk -->
+        <div id="loader" class="planet-loader-wrapper">
+            <div class="loader">
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="text"><span>Loading</span></div>
+                <div class="line"></div>
+            </div>
+        </div>
+
+        <div id="sensor-hud" class="cyber-hud">
+            <!-- 手势点阵可视化（状态框内嵌 canvas）-->
+            <div id="gesture-preview">
+                <div class="widget-header">
+                    <h1 class="hud-title">Vector Core</h1>
+                </div>
+                <div class="widget-body">
+                    <canvas id="hand-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Beta Access Trigger -->
+        <button id="beta-trigger" class="beta-trigger">β</button>
+        <div id="beta-drawer" class="beta-drawer"></div>
+
+        <!-- Hybrid UI: Bottom-Right Controls (Colors & Toggles) -->
+        <button id="menu-toggle" class="menu-trigger">+</button>
+        <div id="hybrid-menu" class="glass-menu">
+            <canvas id="sidebar-bg"></canvas>
+            <div class="menu-header">
+                <h3>核心配置</h3>
+                <!-- Logout Button -->
+                <button class="Btn" onclick="window.close()">
+                    <div class="sign">
+                        <svg viewBox="0 0 512 512">
+                            <path
+                                d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="text">Logout</div>
+                </button>
+            </div>
+            <div class="menu-content">
+                <div class="ctrl-group">
+                    <label>色泽灵感 (AI)</label>
+                    <div class="ai-row">
+                        <input type="text" id="ai-prompt" placeholder="意境描述...">
+                        <button id="ai-gen-btn">赋予</button>
+                    </div>
+                </div>
+                <div class="ctrl-row">
+                    <div class="color-picker-item">
+                        <span>核心</span>
+                        <input type="color" id="c-core" value="#3b82f6">
+                    </div>
+                    <div class="color-picker-item">
+                        <span>轨道</span>
+                        <input type="color" id="c-orbit" value="#383838">
+                    </div>
+                </div>
+                <div class="ctrl-group">
+                    <label>系统音量 (50%)</label>
+                    <div class="slider-container">
+                        <input type="range" id="volume-slider" min="0" max="100" value="50" class="cyber-slider">
+                    </div>
+                </div>
+                <div class="ctrl-group">
+                    <div class="label-row">
+                        <label>音效音量 <span id="sfx-volume-value">(20%)</span></label>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" id="sfx-volume-slider" min="0" max="100" value="20" class="cyber-slider">
+                    </div>
+                </div>
+
+                <!-- Ultra-Compact Orbit Controls -->
+                <div class="ctrl-group" style="margin-bottom: 5px;">
+                    <label style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 2px;">
+                        <span style="color: rgba(255,255,255,0.6);">流光半径</span>
+                        <span id="radius-val" style="display: none;">1.50</span>
+                    </label>
+                    <div class="slider-container" style="margin-bottom: 0;">
+                        <input type="range" id="radius-slider" min="1.5" max="4.0" step="0.05" value="1.50" class="cyber-slider" style="accent-color: #8b5cf6; height: 4px; width: 100%;">
+                    </div>
+                </div>
+                
+                <div class="ctrl-group" style="margin-bottom: 5px;">
+                    <label style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 2px;">
+                        <span style="color: rgba(255,255,255,0.6);">轨道宽度</span>
+                        <span id="orbit-width-val" style="display: none;">0.00</span>
+                    </label>
+                    <div class="slider-container" style="margin-bottom: 0;">
+                        <input type="range" id="orbit-width-slider" min="0" max="2.0" step="0.01" value="0.00" class="cyber-slider" style="accent-color: #FF9900; height: 4px; width: 100%;">
+                    </div>
+                </div>
+                <div class="ctrl-row slider-row" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-bottom: 5px; display: flex; justify-content: space-around; align-items: center;">
+                    <!-- Bubble 1: Points -->
+                    <div class="bubble-container">
+                        <input id="show-points-checkbox" type="checkbox" class="bubble" checked>
+                        <span class="tooltip">显示点阵</span>
+                    </div>
+                    <!-- Bubble 2: Funny Sound (Beta 2) -->
+                    <div class="bubble-container">
+                        <input id="funny-sound-checkbox" type="checkbox" class="bubble">
+                        <span class="tooltip">滑稽音 (Beta 2)</span>
+                    </div>
+                    <!-- Bubble 3: Digital Glitch (Beta 3) -->
+                    <div class="bubble-container">
+                        <input id="digital-glitch-checkbox" type="checkbox" class="bubble">
+                        <span class="tooltip">数字故障 (Beta 1)</span>
+                    </div>
+                </div>
+
+                <div class="ctrl-row perf-row"
+                    style="margin-top: 10px; padding-top: 0px;">
+                    <span class="bubble-text">光环模式</span>
+                    <input id="halo-checkbox" type="checkbox" style="display: none;" checked />
+                    <label class="switch" for="halo-checkbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="slider">
+                            <path
+                                d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V256c0 17.7 14.3 32 32 32s32-14.3 32-32V32zM143.5 120.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z" />
+                        </svg>
+                    </label>
+                </div>
+                <div class="ctrl-row perf-row" style="margin-top: 10px;">
+                    <span class="bubble-text">显示 3D 仪表</span>
+                    <input id="menu3d-checkbox" type="checkbox" style="display: none;" />
+                    <label class="switch" for="menu3d-checkbox">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="slider">
+                            <path
+                                d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V256c0 17.7 14.3 32 32 32s32-14.3 32-32V32zM143.5 120.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z" />
+                        </svg>
+                    </label>
+                </div>
+                <div class="ctrl-group" style="margin-top: 15px;">
+                    <div class="label-row"
+                        style="display: flex; align-items: center; justify-content: space-between;">
+                        <label style="margin-bottom:0; font-size: 12px; color: rgba(255,255,255,0.6);">说明书</label>
+                        <span id="font-help" class="info-icon" title="查看引导">i</span>
+                    </div>
+
+                    <div id="help-tooltip" class="help-content" style="display: none;">
+                        <p>💡 <b>引导说明：</b></p>
+                        <ul style="padding-left: 15px; margin: 5px 0;">
+                            <li>点击“导入”选择电脑上的 <b>.ttf / .otf</b> 文件。</li>
+                            <li>或者输入 <b>Google Fonts</b> 的 CSS URL。</li>
+                            <li>字体将实时解析并应用于全局页面。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Inputs for 3D Menu Sync -->
+        <div style="display:none;">
+            <input type="range" id="c-count" min="0" max="5000" step="100" value="2500">
+            <input type="range" id="c-sens" min="0.01" max="0.3" step="0.01" value="0.10">
+            <input type="range" id="c-speed" min="0" max="5" step="0.1" value="1">
+            <input type="range" id="c-opacity" min="0.1" max="1.0" step="0.05" value="0.85">
+            <input type="range" id="c-radius" min="1.5" max="4.0" step="0.05" value="1.50">
+            <input type="range" id="c-trail" min="0" max="25" step="1" value="15">
+            <input type="range" id="c-damping" min="0" max="1" step="0.01" value="0.04">
+            <input type="range" id="c-volume" min="0" max="1" step="0.01" value="0.5">
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="canvas-container"></div>
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js Post-Processing -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+node_modules/
+node_modules.broken-*/
+node_modules.partial-*/
+release/
+VectorCore-*-win-*-portable/
+.playwright-cli/
+.workbuddy/
+AGENTS.md
+启动器.url
+PROJECT_EXPERIENCE.md
+photos/
+debug_server.bat
+run_server.bat
+run_server_robust.bat
+npm-debug.log*
